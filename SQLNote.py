@@ -30,14 +30,16 @@ class DataBase():      #SQL dosya oluşturma-Veri Ekleme-Veri Kontrol İşlemler
     def secili_veri(self,name):
         cursor.execute("select * from exam_note where Name=?",(name,))
         liste=cursor.fetchall()
+        yeni_liste=[]
         for x in liste:
-            print(x)
+            yeni_liste.append(x)
+        return yeni_liste
 
     def vize_degistirme(self):
-        name=input("Lutfen ogrencinin ismini ve soyadini giriniz: ")
-        if(self.secili_veri(name)!=" "):
+        ogrenci_ismi=input("Lutfen ogrencinin ismini ve soyadini giriniz: ")
+        if(len(self.secili_veri(ogrenci_ismi))>0):
             vize_notu=int(input("Lutfen yeni vize notunu giriniz: "))
-            cursor.execute("update exam_note set vize=? where name=?", (vize_notu, name)) #isimden ulaşıp vizeyi değiştirdik
+            cursor.execute("update exam_note set vize=? where name=?", (vize_notu, ogrenci_ismi)) #isimden ulaşıp vizeyi değiştirdik
             print("Yeni Vize Notu {} olup başarıyla degistirilmistir".format(vize_notu))
         else:
             print("Girilen İsim/Soyisime göre öğrenci bulunamadı.Lütfen tekrar gözden geçiriniz!")
@@ -45,7 +47,7 @@ class DataBase():      #SQL dosya oluşturma-Veri Ekleme-Veri Kontrol İşlemler
 
     def final_degistirme(self):
         name=input("Lutfen ogrencinin ismini ve soyadini giriniz: ")
-        if(self.secili_veri(name)!=" "):
+        if(len(self.secili_veri(name))>0):
             final_notu=int(input("Lutfen yeni final notunu giriniz: "))
             cursor.execute("update exam_note set Final=? where name=?", (final_notu, name)) #isimden ulaşıp finali değiştirdik
             print("Yeni Vize Notu {} olup başarıyla degistirilmistir".format(final_notu))
@@ -55,13 +57,14 @@ class DataBase():      #SQL dosya oluşturma-Veri Ekleme-Veri Kontrol İşlemler
 
     def proje_degistirme(self):
         name=input("Lutfen ogrencinin ismini ve soyadini giriniz: ")
-        if(self.secili_veri(name)!=" "):
+        if(len(self.secili_veri(name))>0):
             proje_notu=int(input("Lutfen yeni proje notunu giriniz: "))
             cursor.execute("update exam_note set Proje=? where name=?", (proje_notu, name)) #isimden ulaşıp proje değiştirdik
             print("Yeni Vize Notu {} olup başarıyla degistirilmistir".format(proje_notu))
         else:
             print("Girilen İsim/Soyisime göre öğrenci bulunamadı.Lütfen tekrar gözden geçiriniz!")
         con.commit()
+
 
 
 
@@ -88,12 +91,13 @@ dosya_verileri()  #Dosya verilerini çağırıp içindeki  işlemleri yaptık
 database=DataBase()
 database.baglanti_olustur()
 
+
+
                         #Bu kısımda dosyamızdaki tüm verileri database'imize aktardık
 """sayac=0
 while (sayac<len(isimler_list)):            #Bu kısımda ayıkladığımız metindeki tüm verileri databasimize aktarıyoruz
     database.veri_ekleme(isimler_list[sayac],vizeler_list[sayac],finaller_list[sayac],projeler_list[sayac],ortalama_list[sayac])
     sayac+=1
-
 database.tumverileri_goster()
 """
 
@@ -115,15 +119,15 @@ while True:
         else:
             ort = (vize_not * 3 / 10) + (final_not * 5 / 10) + (proje_not * 2 / 10)
             database.veri_ekleme(name,vize_not,final_not,proje_not,ort)
+
     elif(islem=="3"):
         ogrenci=input("Lutfen öğrencinin ad ve soyadını giriniz: ")
         if(database.secili_veri(ogrenci)!=" "):                                     #Database kontrol işlemi yaptık
             print("İstenilen Öğrencinin Bilgileri Getiriliyor...")
             time.sleep(1)
-            database.secili_veri(ogrenci)
+            print(database.secili_veri(ogrenci))
         else:
             print("Girilen Öğrenciye Ait Bilgi Bulunmamıştor.Lütfen tekrar gözden geçiriniz!")
-
 
     elif(islem=="4"):
         database.vize_degistirme()
@@ -136,13 +140,5 @@ while True:
         print("Sistemden Çıkış Yapılıyor...")
         time.sleep(2)
         break
-
-
-
-
-
-
-
-
 
 
