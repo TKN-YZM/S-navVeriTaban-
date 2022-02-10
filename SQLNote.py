@@ -141,4 +141,6 @@ while True:
         time.sleep(2)
         break
 
+     else:
+        print("Lütfen belirtilen seçeneklerden birinin numarısını giriniz")
 
